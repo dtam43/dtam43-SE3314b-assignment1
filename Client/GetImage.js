@@ -8,13 +8,16 @@ let ITPpacket = require("./ITPRequest"); // uncomment this line after you run np
 // Variables from command line arguments
 let HOST = argv.s.split(":")[0];
 let PORT = argv.s.split(":")[1];
-let imageName = argv.q;
+let image = argv.q.split(".");
+let imageName = image[0];
+let imageType = image[1];
 let version = argv.v;
 
 // Print the input arguments (debugging)
 console.log("Server IP: " + HOST);
 console.log("Server Port: " + PORT);
 console.log("Image Name: " + imageName);
+console.log("Image Type: " + imageType);
 console.log("Version: " + version);
 
 // Create a new client socket and connect to the server
@@ -22,10 +25,15 @@ let client = new net.Socket();
 client.connect(PORT, HOST, function () {
   console.log("Connected to ImageDB server on: " + HOST + ":" + PORT);
 
-  // TODO: create ITP packet using the parameters from the command line
+  // Create ITP packet
+  const packet = ITPpacket.getBytePacket(
+    version,
+    imageType.toLowerCase(),
+    imageName
+  );
 
   // Send the ITP packet to the server
-  client.write("hello server!");
+  client.write(packet);
 });
 
 client.on("data", function (data) {

@@ -1,19 +1,34 @@
 // You may need to add some statements here
 
 module.exports = {
+  packet: [],
   init: function () {
-    // feel free to add function parameters as needed
-    //
-    // enter your code here
-    //
+    this.packet = new Array(12 + fileName.length).fill(0);
   },
 
   //--------------------------
   //getBytePacket: returns the entire packet in bytes
   //--------------------------
-  getBytePacket: function () {
-    // enter your code here
-    return "this should be a correct packet";
+  getBytePacket: function (version, imageType, fileName) {
+    let timestamp = Math.floor(Math.random() * 999) + 1;
+
+    // Convert image type to integer
+    let type = imageType == "png" ? 1 : imageType == "bmp" ? 2 : imageType == "tiff" ? 3 : imageType == "jpeg" ? 4 : imageType == "gif" ? 5 : imageType == "raw" ? 15 : 0;
+
+    // Store the ITP components to the packet (version, reserved, request type, timestamp, image type, file size)
+    storeBitPacket(this.packet, version, 0, 4);
+    storeBitPacket(this.packet, 0, 30, 2);
+    storeBitPacket(this.packet, timestamp, 32, 32);
+    storeBitPacket(this.packet, type, 64, 4);
+    storeBitPacket(this.packet, fileName.length, 68, 28);
+
+    // Store the file name to the packet
+    let fileNameBytes = stringToBytes(fileName);
+    for (let i = 0; i < fileNameBytes.length; i++) {
+      this.packet[12 + i] = fileNameBytes[i];
+    }
+
+    return new Uint8Array(this.packet);
   },
 };
 

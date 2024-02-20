@@ -12,9 +12,32 @@ module.exports = {
     console.log(`\nClient-${this.id} is connected at timestamp: ${this.id}`);
 
     // Handle ITP packet from client
-    sock.on("data", function (data) {
-      console.log("Received from client: " + data);
+    sock.on("data", (data) => {
+      // Print out packet in bits
+      console.log("\nITP packet received: ");
+      printPacketBit(data);
+
+      // Parse the ITP packet contents
+      let version = parseBitPacket(data, 0, 4);
+      let requestType = parseBitPacket(data, 30, 2);
+      let timestamp = parseBitPacket(data, 32, 32);
+      let imageType = parseBitPacket(data, 64, 4);
+      let type = imageType == 1 ? "PNG" : imageType == 2 ? "BMP" : imageType == 3 ? "TIFF" : imageType == 4 ? "JPEG" : imageType == 5 ? "GIF" : imageType == 15 ? "RAW" : "unknown";
+      let fileNameLength = parseBitPacket(data, 68, 28);
+      let fileName = bytesToString(data.slice(12, 12 + fileNameLength));
+      
+      // Output requests to console
+      console.log("\nClient-" + this.id + " requests: ");
+      console.log(`    --ITP version: ${version}`);
+      console.log(`    --Timestamp: ${timestamp}`);
+      console.log(`    --Request type: ${requestType === 0 ? "Query" : "Unknown"}`);
+      console.log(`    --Image file extension(s): ${type}`);
+      console.log(`    --Image file name: ${fileName}`);
     });
+
+    sock.on("close", () => {
+      console.log(`\nClient-${this.id} closed the connection`);
+    })
   },
 };
 
