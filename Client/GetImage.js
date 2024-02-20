@@ -73,6 +73,12 @@ client.on("close", () => {
   console.log("Connection closed");
 });
 
+// Handle error from server
+client.on("error", (err) => {
+  console.log("Error with the server. Closing connection");
+  client.end();
+});
+
 //// Some usefull methods ////
 // Feel free to use them, but DO NOT change or add any code in these methods.
 

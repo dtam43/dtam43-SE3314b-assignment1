@@ -4,6 +4,7 @@ let singleton = require("./Singleton");
 module.exports = {
   id: 0,
 
+  // Function to handle connection with the client
   handleClientJoining: function (sock) {
     // Store timestamp to use as ID and verify connection
     this.id = singleton.getTimestamp();
@@ -38,13 +39,18 @@ module.exports = {
         // Send the ITP response packet to the client
         sock.write(packet);
       }
-
     });
 
     // Handle disconnection from client
     sock.on("close", () => {
       console.log(`\nClient-${this.id} closed the connection`);
     })
+
+    // Handle error from client
+    sock.on("error", (err) => {
+      console.log("\nError with Client-" + this.id + ". Closing connection");
+      sock.end();
+    });
   },
 };
 

@@ -1,4 +1,5 @@
 
+// The Singleton function is reponsible for keeping track of time and sequence numbers in the server.
 module.exports = {
   timestamp: null,
   intervall: null,

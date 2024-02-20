@@ -4,7 +4,7 @@ module.exports = {
     packet: [],
 
     //--------------------------
-    //getpacket: returns the entire packet
+    //getPacket: returns the entire packet
     //--------------------------
     getPacket: function (version, responseType, sequenceNumber, timestamp, imagePath) {
         let imageData;
