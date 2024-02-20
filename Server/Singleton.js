@@ -1,4 +1,3 @@
-// Some code need to be added here, that are common for the module
 
 module.exports = {
   timestamp: null,
@@ -19,14 +18,13 @@ module.exports = {
         this.timestamp = 0;
       }
     }, 10);
-    
   },
 
   //--------------------------
   //getSequenceNumber: return the current sequence number + 1
   //--------------------------
   getSequenceNumber: function () {
-    this.sequenceNumber += 1;
+    this.sequenceNumber = (this.sequenceNumber + 1) % Math.pow(2, 26);
     return this.sequenceNumber;
   },
 

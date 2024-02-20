@@ -1,4 +1,3 @@
-// You may need to add some statements here
 
 module.exports = {
   packet: [],

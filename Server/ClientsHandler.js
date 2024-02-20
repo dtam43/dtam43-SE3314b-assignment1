@@ -1,8 +1,6 @@
 let ITPpacket = require("./ITPResponse");
 let singleton = require("./Singleton");
 
-// You may need to add some statements here
-
 module.exports = {
   id: 0,
 
@@ -24,7 +22,7 @@ module.exports = {
       let imageType = parseBitPacket(data, 64, 4);
       let type = imageType == 1 ? "PNG" : imageType == 2 ? "BMP" : imageType == 3 ? "TIFF" : imageType == 4 ? "JPEG" : imageType == 5 ? "GIF" : imageType == 15 ? "RAW" : "unknown";
       let fileNameLength = parseBitPacket(data, 68, 28);
-      let fileName = bytesToString(data.slice(12, 12 + fileNameLength));
+      let fileName = bytesToString(data.subarray(12, 12 + fileNameLength));
       
       // Output requests to console
       console.log("\nClient-" + this.id + " requests: ");

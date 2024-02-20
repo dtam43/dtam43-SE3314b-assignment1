@@ -1,9 +1,8 @@
 let net = require("net");
-let fs = require("fs");
 let argv = require("minimist")(process.argv.slice(2));
+let fs = require("fs");
 let open = require("open");
-
-let ITPpacket = require("./ITPRequest"); // uncomment this line after you run npm install command
+let ITPpacket = require("./ITPRequest");
 
 // Variables from command line arguments
 let HOST = argv.s.split(":")[0];
@@ -12,13 +11,6 @@ let image = argv.q.split(".");
 let imageName = image[0];
 let imageType = image[1];
 let version = argv.v;
-
-// Print the input arguments (debugging)
-console.log("Server IP: " + HOST);
-console.log("Server Port: " + PORT);
-console.log("Image Name: " + imageName);
-console.log("Image Type: " + imageType);
-console.log("Version: " + version);
 
 // Create a new client socket and connect to the server
 let client = new net.Socket();
@@ -41,7 +33,7 @@ client.on("data", function (data) {
   
   // Print out packet in bits
   console.log("\nITP packet header received: ");
-  printPacketBit(data.slice(0, 12));
+  printPacketBit(data.subarray(0, 12));
 
   // Parse the ITP packet contents
   let version = parseBitPacket(data, 0, 4);
@@ -49,6 +41,7 @@ client.on("data", function (data) {
   let type = responseType == 0 ? "Query" : responseType == 1 ? "Found" : responseType == 2 ? "Not found" : responseType == 3 ? "Busy" : "Unknown";
   let sequenceNumber = parseBitPacket(data, 6, 26);
   let timestamp = parseBitPacket(data, 32, 32);
+  let imageSize = parseBitPacket(data, 64, 32);
 
   // Output requests to console
   console.log("\nServer sent: ");
@@ -56,6 +49,19 @@ client.on("data", function (data) {
   console.log(`    --Response Type = ${type}`);
   console.log(`    --Sequence Number = ${sequenceNumber}`);
   console.log(`    --Timestamp = ${timestamp}`);
+
+  // Open the image data if the response type is "Found"
+  if (responseType === 1) {
+    // Extract the image data from the packet
+    let imageData = data.subarray(12, 12 + imageSize);
+
+    // Write the image data to a file
+    let imagePath = `./${imageName}.${imageType}`;
+    fs.writeFileSync(imagePath, imageData);
+
+    // Open the image file
+    open(imagePath);
+  }
 
   // Close the connection
   client.end();

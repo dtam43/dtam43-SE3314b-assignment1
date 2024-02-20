@@ -13,7 +13,7 @@ module.exports = {
             // Try to read the image file
             imageData = fs.readFileSync(imagePath);
         } catch (err) {
-            // If the image doesn't exist, set response type to "not found" and imagedata to empty
+            // If the image doesn't exist, set response type to "not found" and imageData to empty
             responseType = 2;
             imageData = [];
         }
