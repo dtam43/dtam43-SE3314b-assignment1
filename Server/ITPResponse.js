@@ -1,20 +1,38 @@
-
-// You may need to add some statements here
+const fs = require('fs');
 
 module.exports = {
-
-    init: function () { // feel free to add function parameters as needed
-        //
-        // enter your code here
-        //
-    },
+    packet: [],
 
     //--------------------------
     //getpacket: returns the entire packet
     //--------------------------
-    getPacket: function () {
-        // enter your code here
-        return "this should be a correct packet";
+    getPacket: function (version, responseType, sequenceNumber, timestamp, imagePath) {
+        let imageData;
+        // Read image file into byte array
+        try {
+            // Try to read the image file
+            imageData = fs.readFileSync(imagePath);
+        } catch (err) {
+            // If the image doesn't exist, set response type to "not found" and imagedata to empty
+            responseType = 2;
+            imageData = [];
+        }
+
+        this.packet = new Array(12 + imageData.length).fill(0);
+
+        // Store the ITP components to the packet (version, response type, sequence number, timestamp)
+        storeBitPacket(this.packet, version, 0, 4);
+        storeBitPacket(this.packet, responseType, 4, 2);
+        storeBitPacket(this.packet, sequenceNumber, 6, 26);
+        storeBitPacket(this.packet, timestamp, 32, 32);
+        storeBitPacket(this.packet, imageData.length, 64, 32);
+        
+        // Store the image data to the packet
+        for (let i = 0; i < imageData.length; i++) {
+            this.packet[12 + i] = imageData[i];
+        }
+
+        return new Uint8Array(this.packet);
     }
 };
 

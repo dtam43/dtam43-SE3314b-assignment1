@@ -2,14 +2,12 @@
 
 module.exports = {
   packet: [],
-  init: function () {
-    this.packet = new Array(12 + fileName.length).fill(0);
-  },
 
   //--------------------------
   //getBytePacket: returns the entire packet in bytes
   //--------------------------
   getBytePacket: function (version, imageType, fileName) {
+    this.packet = new Array(12 + fileName.length).fill(0);
     let timestamp = Math.floor(Math.random() * 999) + 1;
 
     // Convert image type to integer

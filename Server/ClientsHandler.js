@@ -33,8 +33,17 @@ module.exports = {
       console.log(`    --Request type: ${requestType === 0 ? "Query" : "Unknown"}`);
       console.log(`    --Image file extension(s): ${type}`);
       console.log(`    --Image file name: ${fileName}`);
+
+      // Create ITP response packet if version and request type are valid
+      if (version === 9 && requestType === 0) {
+        const packet = ITPpacket.getPacket(version, 1, singleton.getSequenceNumber(), singleton.getTimestamp(), "images/" + fileName + "." + type.toLowerCase());
+        // Send the ITP response packet to the client
+        sock.write(packet);
+      }
+
     });
 
+    // Handle disconnection from client
     sock.on("close", () => {
       console.log(`\nClient-${this.id} closed the connection`);
     })

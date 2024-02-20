@@ -36,8 +36,35 @@ client.connect(PORT, HOST, function () {
   client.write(packet);
 });
 
+// Handle the response from the server
 client.on("data", function (data) {
-  //TODO: handle getting a response
+  
+  // Print out packet in bits
+  console.log("\nITP packet header received: ");
+  printPacketBit(data.slice(0, 12));
+
+  // Parse the ITP packet contents
+  let version = parseBitPacket(data, 0, 4);
+  let responseType = parseBitPacket(data, 4, 2);
+  let type = responseType == 0 ? "Query" : responseType == 1 ? "Found" : responseType == 2 ? "Not found" : responseType == 3 ? "Busy" : "Unknown";
+  let sequenceNumber = parseBitPacket(data, 6, 26);
+  let timestamp = parseBitPacket(data, 32, 32);
+
+  // Output requests to console
+  console.log("\nServer sent: ");
+  console.log(`    --ITP version = ${version}`);
+  console.log(`    --Response Type = ${type}`);
+  console.log(`    --Sequence Number = ${sequenceNumber}`);
+  console.log(`    --Timestamp = ${timestamp}`);
+
+  // Close the connection
+  client.end();
+  console.log("\nDisconnected from the server");
+});
+
+// Confirm connection closed
+client.on("close", () => {
+  console.log("Connection closed");
 });
 
 //// Some usefull methods ////

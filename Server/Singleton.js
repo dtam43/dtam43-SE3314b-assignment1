@@ -3,9 +3,14 @@
 module.exports = {
   timestamp: null,
   intervall: null,
+  sequenceNumber: null,
 
   init: function () {
+    // Initialize the timestamp and sequence number to random values
     this.timestamp = Math.floor(Math.random() * 999) + 1;
+    this.sequenceNumber = Math.floor(Math.random() * 999) + 1;
+
+    // Set an interval to increment the timestamp every 10ms
     this.interval = setInterval(() => {
       this.timestamp += 1;
 
@@ -14,14 +19,15 @@ module.exports = {
         this.timestamp = 0;
       }
     }, 10);
+    
   },
 
   //--------------------------
   //getSequenceNumber: return the current sequence number + 1
   //--------------------------
   getSequenceNumber: function () {
-    // Enter your code here //
-    return "this should be a correct sequence number";
+    this.sequenceNumber += 1;
+    return this.sequenceNumber;
   },
 
   //--------------------------
