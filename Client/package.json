@@ -1,12 +1,13 @@
 {
-  "name": "enter the assignment name here",
+  "name": "SE 3314b assignment 1",
   "version": "1.0.0",
   "description": "",
   "main": "../Client/GetImage.js",
   "dependencies": {
+    "command": "^0.0.5",
+    "minimist": "^1.2.8",
     "open": "^7.4.0"
   },
-  "devDependencies": {},
   "author": "enter your name here",
   "license": "ISC"
 }

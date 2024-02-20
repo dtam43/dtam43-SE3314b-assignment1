@@ -1,25 +1,33 @@
-
 // Some code need to be added here, that are common for the module
 
 module.exports = {
-    init: function() {
-       // init function needs to be implemented here //
-    },
+  timestamp: null,
+  intervall: null,
 
-    //--------------------------
-    //getSequenceNumber: return the current sequence number + 1
-    //--------------------------
-    getSequenceNumber: function() {
-      // Enter your code here //
-        return "this should be a correct sequence number";
-    },
+  init: function () {
+    this.timestamp = Math.floor(Math.random() * 999) + 1;
+    this.interval = setInterval(() => {
+      this.timestamp += 1;
 
-    //--------------------------
-    //getTimestamp: return the current timer value
-    //--------------------------
-    getTimestamp: function() {
-        return "this should be a correct timestamp";
-    }
+      // Reset the timestamp when it reaches 2^32
+      if (this.timestamp >= Math.pow(2, 32)) {
+        this.timestamp = 0;
+      }
+    }, 10);
+  },
 
+  //--------------------------
+  //getSequenceNumber: return the current sequence number + 1
+  //--------------------------
+  getSequenceNumber: function () {
+    // Enter your code here //
+    return "this should be a correct sequence number";
+  },
 
+  //--------------------------
+  //getTimestamp: return the current timer value
+  //--------------------------
+  getTimestamp: function () {
+    return this.timestamp;
+  },
 };
