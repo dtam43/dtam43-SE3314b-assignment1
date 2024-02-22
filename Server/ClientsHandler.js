@@ -33,12 +33,18 @@ module.exports = {
       console.log(`    --Image file extension(s): ${type}`);
       console.log(`    --Image file name: ${fileName}`);
 
-      // Create ITP response packet if version and request type are valid
+      let packet;
       if (version === 9 && requestType === 0) {
-        const packet = ITPpacket.getPacket(version, 1, singleton.getSequenceNumber(), singleton.getTimestamp(), "images/" + fileName + "." + type.toLowerCase());
-        // Send the ITP response packet to the client
-        sock.write(packet);
+        // Create ITP response packet if version and request type are valid
+        packet = ITPpacket.getPacket(version, 1, singleton.getSequenceNumber(), singleton.getTimestamp(), "images/" + fileName + "." + type.toLowerCase());
+        
+      } else {
+        // Create empty ITP packet if version or request type are invalid
+        packet = ITPpacket.getPacket(version, 2, singleton.getSequenceNumber(), singleton.getTimestamp(), "");
       }
+
+      // Send the ITP response packet to the client
+      sock.write(packet);
     });
 
     // Handle disconnection from client
